@@ -10,9 +10,9 @@
 #---------------------------------------------------------------------
 
 from PyQt5.QtWidgets import QAction, QMessageBox
+from platform import system
+from os import path, makedirs
 from datetime import datetime
-import platform
-import qgis
 
 def classFactory(iface):
     return SavePlugin(iface)
@@ -33,10 +33,22 @@ class SavePlugin:
         del self.action
 
     def run(self):
-        if platform.system() == 'Linux':
-            image_dir = '/mnt/media/QGIS/report/'
-        elif platform.system() == 'Windows':
-            image_dir = 'C:\\Users\\USER\\report\\'
+        image_dir = path.dirname(self.iface.activeLayer().dataProvider().dataSourceUri())
+
+        if not path.exists(image_dir):
+            if system() == 'Linux':
+                image_dir = '/mnt/media/QGIS'
+            elif system() == 'Windows':
+                image_dir = 'C:\\Users\\USER'
+
+        if system() == 'Linux':
+            image_dir = image_dir + '/report/'
+        elif system() == 'Windows':
+            image_dir = image_dir + '\\report\\'
+
+        if not path.exists(image_dir):
+            makedirs(image_dir)
+
         image_file = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')+'.png'
-        qgis.utils.iface.mapCanvas().saveAsImage(image_dir + image_file)
-        QMessageBox.information(None, 'Save plugin', 'Saveed as:'+image_file)
+        self.iface.mapCanvas().saveAsImage(image_dir + image_file)
+#        QMessageBox.information(None, 'Save plugin', 'Saveed as:'+image_file)
