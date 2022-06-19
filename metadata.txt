@@ -1,0 +1,9 @@
+[general]
+name=SaveScreen
+description=Save screen
+about=Save working space
+version=1.0
+qgisMinimumVersion=3.0
+author=Oleksandr Dmytrenko
+email=wvdial@gmail.com
+repository=https://github.com/alex43dm/qgis-save
